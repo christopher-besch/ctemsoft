@@ -1,0 +1,198 @@
+# ###################################################################
+#  makefile     
+#
+#                                    created:  5/19/01 
+#  Author: Marc De Graef
+#  
+#  Description:  makefile for unix version of CTEMsoft package
+#                contains all detailed compilation instructions
+# 
+#  History
+# 
+#  modified by  rev reason
+#  -------- --- --- -----------
+#  11/05/03 MDG 1.0 original
+# ###################################################################
+#
+######################################################################
+# USER CONFIGURABLE PARAMETERS #
+################################
+# path to the main CTEMsoft folder:  (replace PATHNAME by appropriate path)
+CTEM = /PATHNAME/CTEMsoft
+#
+# compiler names
+#
+CMPLR = f90
+CMPLR77 = f77
+#
+# location of libraries
+#
+ULL    = /usr/local/lib
+#
+# the LAPACK-3.0 library can be found here
+#
+LAPACK = $(ULL)/lapack-3.0
+LBLAS = $(LAPACK)
+LIBLP = $(LAPACK)/lapack_ALPHA.a $(LBLAS)/blas_alpha.a $(LAPACK)/libblas.a $(LAPACK)/tmglib_ALPHA.a 
+#
+# the fftw libraries for single and double precision are located here
+#
+LIBSFFTW = $(ULL)/libsfftw.a
+LIBDFFTW = $(ULL)/libdfftw.a
+#
+# compiler options
+#
+OPT = -O5 -v -fast -unroll 0 -speculate all -tune host 
+#######################################################################
+# NO USER CONFIGURABLE PARAMETERS BELOW #
+#########################################
+CP = /bin/cp
+MV = /bin/mv
+RM = /bin/rm -f
+CHAP1= chap1
+CHAP2= chap2
+CHAP3= chap3
+CHAP4= chap4
+CHAP6= chap6
+MAKE = make -f m.routines
+SHELL = /bin/sh
+LIBTEM = libtem.a
+# location of subfolders
+EXE = $(CTEM)/exe
+SRC = $(CTEM)/src
+# libraries
+LIB = $(LIBTEM) $(LIBLP)
+#
+
+# compilation instructions for all individual library programs
+local.o  :  local.f90
+	$(CMPLR) $(OPT) -c local.f90
+
+io.o:  io.f90 local.o
+	$(CMPLR) $(OPT) -c io.f90
+
+error.o  :  error.f90  local.o
+	$(CMPLR) $(OPT) -c error.f90
+
+constants.o:  constants.f90 
+	$(CMPLR) $(OPT) -c constants.f90
+
+math.o   :  math.f90 error.o
+	$(CMPLR) $(OPT) -c math.f90
+
+crystalvars.o:  crystalvars.f90 local.o
+	$(CMPLR) $(OPT) -c crystalvars.f90
+
+symmetryvars.o:  symmetryvars.f90 local.o
+	$(CMPLR) $(OPT) -c symmetryvars.f90
+
+crystal.o:  crystal.f90 local.o crystalvars.o error.o math.o symmetryvars.o constants.o
+	$(CMPLR) $(OPT) -c crystal.f90
+
+symmetry.o:  symmetry.f90 crystal.o local.o error.o math.o crystalvars.o symmetryvars.o 
+	$(CMPLR) $(OPT) -c symmetry.f90
+
+files.o  :  files.f90 local.o io.o crystal.o io.o symmetry.o
+	$(CMPLR) $(OPT) -c files.f90
+
+others.o:  others.f90 crystal.o local.o
+	$(CMPLR) $(OPT) -c others.f90
+
+postscript.o:  postscript.f90 crystal.o local.o
+	$(CMPLR) $(OPT) -c postscript.f90
+
+graphics.o:  graphics.f90 crystal.o local.o
+	$(CMPLR) $(OPT) -c graphics.f90
+
+eispack.o:  eispack.f
+	$(CMPLR77) $(OPT) -c eispack.f
+
+diffraction.o:  diffraction.f90 crystal.o local.o others.o
+	$(CMPLR) $(OPT) -c diffraction.f90 
+
+tiff.o: tiff.f90 
+	$(CMPLR) $(OPT) -c tiff.f90 
+
+lorentz.o : lorentz.f90 
+	$(CMPLR) $(OPT) -c lorentz.f90 
+
+ctf.o: ctf.f90 
+	$(CMPLR) $(OPT) -c ctf.f90 
+
+timing.o: timing.f90 
+	$(CMPLR) $(OPT) -c timing.f90 
+
+rksuite_90.o: rksuite_90/CODE/rksuite_90.f90
+	$(CMPLR) $(OPT) -c rksuite_90/CODE/rksuite_90.f90
+
+spsort.o:  spsort.f
+	$(CMPLR77) $(OPT) -c spsort.f
+
+#---individual programs-------------------------------------------------
+
+GPL     : GPL.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/GPL GPL.f90 
+
+# Chapter 1
+star     : star.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/star star.f90 $(LIB)
+
+orbit     : orbit.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/orbit orbit.f90 $(LIB)
+
+listSG     : listSG.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/listSG listSG.f90 $(LIB)
+
+latgeom     : latgeom.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/latgeom latgeom.f90 $(LIB)
+
+family     : family.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/family family.f90 $(LIB)
+
+stereo     : stereo.f90
+	$(CMPLR) $(OPT) -o $(EXE)/stereo stereo.f90 $(LIB)
+
+drawcell     : drawcell.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/drawcell drawcell.f90 $(LIB)
+
+orient     : orient.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/orient orient.f90 $(LIB)
+
+# Chapter 2
+vr     : vr.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/vr vr.f90 $(LIB)
+
+vrfft     : vrfft.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/vrfft vrfft.f90 $(LIB) $(LIBSFFTW)
+
+# Chapter 3
+lens  : lens.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/lens lens.f90 $(LIB) 
+
+zap     : zap.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/zap zap.f90 $(LIB)
+
+holz    : holz.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/holz holz.f90 $(LIB)
+
+# Chapter 4
+xtalinfo     : xtalinfo.f90 
+	$(CMPLR) $(OPT) -o $(EXE)/xtalinfo xtalinfo.f90 $(LIB)
+
+# Chapter 6
+BWshow  : BWshow.f90
+	$(CMPLR) $(OPT) -o $(EXE)/BWshow BWshow.f90 $(LIB)
+
+qg      : qg.f90
+	$(CMPLR) $(OPT) -o $(EXE)/qg qg.f90 $(LIB)
+
+TBBFDF  : TBBFDF.f90
+	$(CMPLR) $(OPT) -o $(EXE)/TBBFDF TBBFDF.f90 $(LIB)
+
+TBBW    : TBBW.f90
+	$(CMPLR) $(OPT) -o $(EXE)/TBBW TBBW.f90 $(LIB)
+
+TBSM    : TBSM.f90
+	$(CMPLR) $(OPT) -o $(EXE)/TBSM TBSM.f90 $(LIB)
+
+# the other programs will be added here in the next version

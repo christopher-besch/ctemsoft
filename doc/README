@@ -1,0 +1,51 @@
+
+This archive contains the complete CTEMsoft library, and 
+application programs corresponding to chapters 1 through 4
+of the CTEM book.
+
+After unpacking the archive, you will find three folders:
+
+doc
+exe
+src
+
+The doc folder contains this README file and, in the future,
+will contain more detailed information in PDF format.
+
+The exe folder will contain all executables after compilation.
+
+The src file contains all source code, including the makefiles.
+
+
+To compile the package, you must first edit the following 
+file:
+
+m.routines
+
+In the section "USER CONFIGURABLE PARAMETERS", you should 
+change the pathname so that CTEM points to the main CTEMsoft folder.
+
+Then change the compiler names, and also the location of the LAPACK
+and BLAS libraries, which are needed for the CTEMsoft package to compile.
+Many systems have these libraries pre-installed, but if you don't have
+them, you can get them from www.netlib.org.  
+
+The FFTW libraries can be obtained from www.fftw.org.
+
+Finally, you should change the optimization switches for your f90
+compiler.
+
+Now you are ready to compile the entire package, which should be
+as simple as typing   make all   at the command line.  Sit back
+and wait until the whole thing is done.
+
+So far, the entire package has been tested on COMPAQ TRU64, on Linux Red Hat,
+and on Mac OSX.  If there are compilation problems, you should try to 
+resolve them, and then notify me, so that I can make whatever changes
+necessary to the source code.
+
+
+11/06/03
+Marc De Graef
+degraef@cmu.edu
+
