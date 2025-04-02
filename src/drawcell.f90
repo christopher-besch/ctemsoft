@@ -62,7 +62,8 @@ integer(kind=irg),parameter    :: n=1000
 character(1)                   :: sgn,ans,sp
 character(3)                   :: acol(n)
 logical                        :: first,again,nn,more,topbot,inside
-real(kind=sgl)                 :: p(4),q(4),xmax,x(n),y(n),z(n),x1,y1,z1,asize(n),rr(4),gg(4),g(3),r(3),cc,M(4,4),negthresh,VD,sc,diam
+real(kind=sgl)                 :: p(4),q(4),xmax,x(n),y(n),z(n),x1,y1,z1,asize(n),rr(4),gg(4),g(3), &
+                                  r(3),cc,M(4,4),negthresh,VD,sc,diam
 integer(kind=irg)              :: h,k,l,mi,kk,idx(n),iview(3),iform
 
  progname = 'drawcell.f90'

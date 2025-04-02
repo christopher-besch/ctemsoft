@@ -280,7 +280,7 @@ character(1)       :: sp
  end do
  call IndexString(instr,hkl,'r')
  call PS_text(CX+0.9,8.00,'|| B-'//instr)
- Space=.True.
+! Space=.True.
  do i=1,3 
   hkl(i)=int(orel % tA(i))
  end do 

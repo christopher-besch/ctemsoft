@@ -18,30 +18,31 @@
 # USER CONFIGURABLE PARAMETERS #
 ################################
 # path to the main CTEMsoft folder:  (replace PATHNAME by appropriate path)
-CTEM = /code
+CTEM = /PATHNAME/CTEMsoft
 #
 # compiler names
 #
-CMPLR = gfortran
-CMPLR77 = gfortran
+CMPLR = f90
+CMPLR77 = f77
 #
 # location of libraries
 #
-ULL    = /usr/lib
+ULL    = /usr/local/lib
 #
 # the LAPACK-3.0 library can be found here
 #
-LAPACK = $(ULL)/x86_64-linux-gnu/lapack
-LBLAS = $(ULL)/x86_64-linux-gnu/blas
-LIBLP = $(LAPACK)/liblapack.a $(LBLAS)/libblas.a
+LAPACK = $(ULL)/lapack-3.0
+LBLAS = $(LAPACK)
+LIBLP = $(LAPACK)/lapack_ALPHA.a $(LBLAS)/blas_alpha.a $(LAPACK)/libblas.a $(LAPACK)/tmglib_ALPHA.a 
 #
 # the fftw libraries for single and double precision are located here
 #
-LIBSFFTW = $(ULL)/x86_64-linux-gnu/libcufftw.so
+LIBSFFTW = $(ULL)/libsfftw.a
+LIBDFFTW = $(ULL)/libdfftw.a
 #
 # compiler options
 #
-OPT = -O5
+OPT = -O5 -v -fast -unroll 0 -speculate all -tune host 
 #######################################################################
 # NO USER CONFIGURABLE PARAMETERS BELOW #
 #########################################

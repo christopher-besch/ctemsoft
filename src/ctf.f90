@@ -127,7 +127,8 @@ real                  :: a
  scope%rhoc   = sqrt(cPi*scope%lambda*scope%delta/sqrt(2.0*scope%lns))  ! chromatic information limit
  scope%dfo    = 0.75*scope%Cs*scope%lambda**2/scope%rhoc**2             ! optimum defocus
  a = 0.25
- scope%rhothetac = ((6.0*cPi*a*scope%thetac)/(scope%lambda*sqrt(scope%lns))*scope%rhoS**4)**0.33333 ! beam divergence information limit
+ scope%rhothetac= (6.0*cPi*a*scope%thetac)/(scope%lambda*sqrt(scope%lns))! beam divergence information limit
+ scope%rhothetac = (scope%rhoS**4*scope%rhothetac)**0.3333
  scope%rhod   = cPi*sqrt(scope%d(1)**2+scope%d(2)**2)/sqrt(6.0*scope%lns)             ! drift information limit
  scope%rhou   = cPi*sqrt(scope%u(1)**2+scope%u(2)**2)/sqrt(scope%lns)                 ! vibration information limit
  scope%rhodet = scope%rhoS*((12.0*sqrt(2.0)*cPi*a)/(scope%CCD_N*sqrt(scope%lns)))**0.25 ! detector information limit
