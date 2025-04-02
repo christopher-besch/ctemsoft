@@ -129,7 +129,7 @@ type(rk_comm_real_1d) :: comm
 ! units of meters and Tesla
 !
 ! number of sampling points
- mess = 'Number of sampling points : '; call GetInt(1); np = io_int(1)
+ mess = 'Number of sampling points : '; call GetInt(1); np = 10
  fnp=float(np)
  allocate(r(np))
  allocate(yy(np))
@@ -141,21 +141,22 @@ type(rk_comm_real_1d) :: comm
  allocate(db(np))
  allocate(z(np))
 ! how many fields ?
- mess = 'Number of magnetic fields along axis (1 or 2) : '; call GetInt(1); GL % nof = io_int(1)
+ mess = 'Number of magnetic fields along axis (1 or 2) : '; call GetInt(1); GL % nof = 1
  do i=1,GL % nof
    mess = 'Field # '; oi_int(1) = i; call WriteInt(1,"(I3)")
 ! maximum strength of B field
-   mess = 'Maximum axial field strength [T]   : '; call GetReal(1); GL % bmax(i) = io_real(1)
+   mess = 'Maximum axial field strength [T]   : '; call GetReal(1); GL % bmax(i) = 2
 ! extent of the field in mm
-   mess = 'Lateral extent parameter a  [mm]   : '; call GetReal(1); GL % aa(i) = io_real(1)
+   mess = 'Lateral extent parameter a  [mm]   : '; call GetReal(1); GL % aa(i) = 1
    GL % aa(i)=0.001D0*GL % aa(i)
 ! location of field maximum along axis
-   mess = 'Location of field maximum   [mm]   : '; call GetReal(1); GL % z(i) = io_real(1)
+   mess = 'Location of field maximum   [mm]   : '; call GetReal(1); GL % z(i) = 0
    GL % z(i)=0.001*GL % z(i)
    mess = '--------'; call Message("(A)")
  end do
 ! range of z
- mess = 'Total length of optical axis [mm]  : '; call GetReal(1); zmax = io_real(1)
+ mess = 'Total length of optical axis [mm]  : '; call GetReal(1); zmax = 10
+ print "(f6.3)", zmax
  zmax=0.001*zmax
  zmin=-zmax*0.5
  zmax=zmax*0.5

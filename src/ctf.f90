@@ -127,10 +127,10 @@ real                  :: a
  scope%rhoc   = sqrt(cPi*scope%lambda*scope%delta/sqrt(2.0*scope%lns))  ! chromatic information limit
  scope%dfo    = 0.75*scope%Cs*scope%lambda**2/scope%rhoc**2             ! optimum defocus
  a = 0.25
- scope%rhothetac = ((6.0*cPi*a*scope%thetac)/(scope%lambda*sqrt(scope%lns))*scope.rhoS**4)**0.33333 ! beam divergence information limit
+ scope%rhothetac = ((6.0*cPi*a*scope%thetac)/(scope%lambda*sqrt(scope%lns))*scope%rhoS**4)**0.33333 ! beam divergence information limit
  scope%rhod   = cPi*sqrt(scope%d(1)**2+scope%d(2)**2)/sqrt(6.0*scope%lns)             ! drift information limit
  scope%rhou   = cPi*sqrt(scope%u(1)**2+scope%u(2)**2)/sqrt(scope%lns)                 ! vibration information limit
- scope%rhodet = scope.rhoS*((12.0*sqrt(2.0)*cPi*a)/(scope%CCD_N*sqrt(scope%lns)))**0.25 ! detector information limit
+ scope%rhodet = scope%rhoS*((12.0*sqrt(2.0)*cPi*a)/(scope%CCD_N*sqrt(scope%lns)))**0.25 ! detector information limit
 ! if verbose, then spit it all out 
  if (verbose) then
   mess = 'Defocus spread               [nm] : '; oi_real(1)=scope%delta; call WriteReal(1,'(f8.3)')
@@ -183,7 +183,7 @@ real         :: r,mask(0:dimx-1,0:dimy-1), damp(0:dimx-1,0:dimy-1), &
     qx(i,j) = qx(i,0)
    end do
   end do
-  qx = qx*scope.dq(1)
+  qx = qx*scope%dq(1)
   do j=0,dimy-1
 !  qy(0,j) = float(j-dimy/2)
    qy(0,j) = float(j)-float(j/(dimy/2))*dimy
@@ -191,7 +191,7 @@ real         :: r,mask(0:dimx-1,0:dimy-1), damp(0:dimx-1,0:dimy-1), &
     qy(i,j) = qy(0,j)
    end do
   end do
-  qy = qy*scope.dq(2)
+  qy = qy*scope%dq(2)
   qq = qx**2+qy**2
 ! polar angle
   do i=0,dimx-1 

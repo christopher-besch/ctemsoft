@@ -18,31 +18,36 @@
 # USER CONFIGURABLE PARAMETERS #
 ################################
 # path to the main CTEMsoft folder:  (replace PATHNAME by appropriate path)
-CTEM = /PATHNAME/CTEMsoft
+CTEM = /code
 #
 # compiler names
 #
-CMPLR = f90
-CMPLR77 = f77
+CMPLR = gfortran -ffree-form
+CMPLR77 = gfortran -ffixed-form
 #
 # location of libraries
 #
-ULL    = /usr/local/lib
+# ULL    = /usr/local/lib
 #
 # the LAPACK-3.0 library can be found here
 #
-LAPACK = $(ULL)/lapack-3.0
-LBLAS = $(LAPACK)
-LIBLP = $(LAPACK)/lapack_ALPHA.a $(LBLAS)/blas_alpha.a $(LAPACK)/libblas.a $(LAPACK)/tmglib_ALPHA.a 
+# LAPACK = /usr/lib/x86_64-linux-gnu/lapack
+# LBLAS = /usr/lib/x86_64-linux-gnu/blas
+# LIBLP = $(LAPACK)/lapack_ALPHA.a $(LBLAS)/blas_alpha.a $(LAPACK)/libblas.a $(LAPACK)/tmglib_ALPHA.a 
+# LIBLP = $(LBLAS)/libblas.a $(LAPACK)/liblapack.a
+LIBLP = /usr/lib/x86_64-linux-gnu/lapack/liblapack.a /usr/lib/x86_64-linux-gnu/blas/libblas.a
 #
 # the fftw libraries for single and double precision are located here
 #
-LIBSFFTW = $(ULL)/libsfftw.a
-LIBDFFTW = $(ULL)/libdfftw.a
+LIBSFFTW = 
+LIBDFFTW = 
 #
 # compiler options
 #
-OPT = -O5 -v -fast -unroll 0 -speculate all -tune host 
+# OPT = -O5 -v -fast -unroll 0 -speculate all -tune host 
+# OPT = -O5 -v -Ofast -unroll 0 -std=f2008 -g
+# OPT = -ffree-form -std=legacy
+OPT = -std=legacy -Og
 #######################################################################
 # NO USER CONFIGURABLE PARAMETERS BELOW #
 #########################################
