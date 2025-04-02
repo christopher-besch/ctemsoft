@@ -1,4 +1,6 @@
 # Chris' Attempt
+- https://ctem.web.cmu.edu
+- https://ctem.web.cmu.edu/frames.html
 - `docker run --net host --name lea-fortran -ti -v .:/code debian`
 ```
     1  ls
