@@ -63,7 +63,8 @@ GPL:
 
 # here are all the program names, ranked by chapter
 F90_C1_FILES = star orbit listSG latgeom family stereo drawcell orient    
-F90_C2_FILES = vr vrfft
+# F90_C2_FILES = vr vrfft
+F90_C2_FILES = vr
 F90_C3_FILES = lens zap holz    
 F90_C4_FILES = xtalinfo
 F90_C6_FILES = BWshow qg TBBFDF TBBW TBSM

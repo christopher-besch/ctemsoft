@@ -37,7 +37,7 @@ LIBLP = $(LAPACK)/liblapack.a $(LBLAS)/libblas.a
 #
 # the fftw libraries for single and double precision are located here
 #
-LIBSFFTW = $(ULL)/x86_64-linux-gnu/libcufftw.so
+LIBSFFTW = $(ULL)/x86_64-linux-gnu/libfftw3.a
 #
 # compiler options
 #
@@ -161,8 +161,8 @@ orient     : orient.f90
 vr     : vr.f90 
 	$(CMPLR) $(OPT) -o $(EXE)/vr vr.f90 $(LIB)
 
-vrfft     : vrfft.f90 
-	$(CMPLR) $(OPT) -o $(EXE)/vrfft vrfft.f90 $(LIB) $(LIBSFFTW)
+# vrfft     : vrfft.f90 
+# 	$(CMPLR) $(OPT) -o $(EXE)/vrfft vrfft.f90 $(LIB) $(LIBSFFTW)
 
 # Chapter 3
 lens  : lens.f90 
