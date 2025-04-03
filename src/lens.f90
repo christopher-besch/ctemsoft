@@ -123,6 +123,10 @@ type(rk_comm_real_1d) :: comm
  progdesc = 'Computation of particle trajectories in round magnetic lens'
  call CTEMsoft
  
+! output file
+! longer file paths somehow don't work :<
+ mess = 'Output PostScript file: '; call GetStr(PS % psname,20)
+
 ! generate magnetic field parameters
 !
 ! Note: all internal computations are carried out in 
@@ -245,7 +249,7 @@ type(rk_comm_real_1d) :: comm
 !
 ! open PostScript outputfile
 ! and set up PostScript fonts
- PS % psname='lens.ps'
+ ! PS % psname='lens.ps'
  call PS_openfile(.TRUE.)
 !
 ! generate the page-layout
