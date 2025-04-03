@@ -202,7 +202,7 @@ def create_lens_frames(
 #         ])
 
 
-def convert_to_video(lens_inputs: List[LensInput], out_dir: str):
+def convert_to_video(lens_inputs: List[LensInput], out_dir: str, framerate: int):
     # this doesn't work for some reason :<
     # this needs to be in the current working directory because ffmpeg uses paths relative to the location of this file
     # file_list_path = "filelist.txt"
@@ -213,7 +213,7 @@ def convert_to_video(lens_inputs: List[LensInput], out_dir: str):
         [
             "ffmpeg",
             "-framerate",
-            "30",
+            f"{framerate}",
             "-i",
             f"{out_dir}/%03d.png",
             "-vcodec",
@@ -244,7 +244,7 @@ def main():
         first_frame=LensParameters(
             sampling_points=1000,
             magnetic_fields=[
-                MagneticField(field_strength=1, lateral_a=1, field_max_loc=0)
+                MagneticField(field_strength=0.3, lateral_a=1, field_max_loc=0)
             ],
             optical_axis_length=10,
             acc_voltage=100000,
@@ -257,9 +257,9 @@ def main():
             optical_axis_length=10,
             acc_voltage=100000,
         ),
-        frames=300,
+        frames=900,
     )
-    convert_to_video(lens_inputs, OUT_DIR)
+    convert_to_video(lens_inputs, OUT_DIR, 30)
     print("All done")
     print("Have a very safe and productive day.")
 
