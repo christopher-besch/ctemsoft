@@ -5,6 +5,7 @@ import subprocess
 from typing import List
 import sys
 import os
+import glob
 
 
 class MagneticField:
@@ -102,10 +103,10 @@ class LensInput:
         output += f"{int(self.lens_parameters.sampling_points)}\n"
         output += f"{len(self.lens_parameters.magnetic_fields)}\n"
         for magnetic_field in self.lens_parameters.magnetic_fields:
-            output += f"{magnetic_field.field_strength:.1f}\n"
-            output += f"{magnetic_field.lateral_a:.1f}\n"
-            output += f"{magnetic_field.field_max_loc:.1f}\n"
-        output += f"{self.lens_parameters.optical_axis_length:.1f}\n"
+            output += f"{magnetic_field.field_strength:.10f}\n"
+            output += f"{magnetic_field.lateral_a:.10f}\n"
+            output += f"{magnetic_field.field_max_loc:.10f}\n"
+        output += f"{self.lens_parameters.optical_axis_length:.10f}\n"
         output += f"{int(self.lens_parameters.acc_voltage)}\n"
         return output
 
@@ -143,7 +144,7 @@ def execute_lenses(inputs: List[LensInput]):
                 "gs",
                 "-dSAFER",
                 "-dEPSCrop",
-                "-r600",
+                "-r100",
                 "-sDEVICE=pngalpha",
                 "-o",
                 input.output_png_file,
@@ -163,9 +164,15 @@ def execute_lenses(inputs: List[LensInput]):
             sys.exit(1)
 
 
+def delete_old_frames(out_dir: str):
+    files = glob.glob(f"{out_dir}/*.png") + glob.glob(f"{out_dir}/*.mp4")
+    for file in files:
+        os.remove(file)
+
+
 def create_lens_frames(
     out_dir: str, first_frame: LensParameters, last_frame: LensParameters, frames: int
-):
+) -> List[LensInput]:
     t_vals = np.linspace(0, 1, frames)
     lens_parameters_vec_list = (
         1 - t_vals[:, None]
@@ -182,14 +189,57 @@ def create_lens_frames(
         )
         for n, lens_parameters in enumerate(lens_parameters_list)
     ]
+    # for lens_input in lens_inputs:
+    #     print(lens_input.to_input_str())
     execute_lenses(lens_inputs)
+    return lens_inputs
+
+
+# def create_file_list(lens_inputs: List[LensInput], file_list_path: str):
+#     with open(file_list_path, "w") as file:
+#         file.writelines([
+#             f"file '{lens_input.output_png_file}'\n" for lens_input in lens_inputs
+#         ])
+
+
+def convert_to_video(lens_inputs: List[LensInput], out_dir: str):
+    # this doesn't work for some reason :<
+    # this needs to be in the current working directory because ffmpeg uses paths relative to the location of this file
+    # file_list_path = "filelist.txt"
+    # create_file_list(lens_inputs, file_list_path)
+
+    output_video = f"{out_dir}/lens.mp4"
+    proc = subprocess.Popen(
+        [
+            "ffmpeg",
+            "-framerate",
+            "30",
+            "-i",
+            f"{out_dir}/%03d.png",
+            "-vcodec",
+            "libx264",
+            "-f",
+            "mp4",
+            "-vb",
+            "1024k",
+            "-preset",
+            "slow",
+            output_video,
+        ],
+        # stdout=subprocess.DEVNULL,
+        # stderr=subprocess.DEVNULL,
+    )
+    if proc.wait() != 0:
+        print("ffmpeg failed")
+        sys.exit(1)
 
 
 def main():
     print("CTEMsoft lens")
     OUT_DIR = "out"
     os.makedirs(OUT_DIR, exist_ok=True)
-    create_lens_frames(
+    delete_old_frames(OUT_DIR)
+    lens_inputs = create_lens_frames(
         OUT_DIR,
         first_frame=LensParameters(
             sampling_points=1000,
@@ -202,13 +252,14 @@ def main():
         last_frame=LensParameters(
             sampling_points=1000,
             magnetic_fields=[
-                MagneticField(field_strength=3, lateral_a=1, field_max_loc=0)
+                MagneticField(field_strength=4, lateral_a=1, field_max_loc=0)
             ],
             optical_axis_length=10,
             acc_voltage=100000,
         ),
-        frames=3,
+        frames=300,
     )
+    convert_to_video(lens_inputs, OUT_DIR)
     print("All done")
     print("Have a very safe and productive day.")
 

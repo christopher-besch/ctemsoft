@@ -1,4 +1,5 @@
 # Chris' Attempt
+- `sudo docker build -t chrisbesch/ctemsoft . && sudo docker run -v ./out:/python_src/out chrisbesch/ctemsoft`
 - https://ctem.web.cmu.edu
 - https://ctem.web.cmu.edu/frames.html
 - `docker run --net host --name lea-fortran -ti -v .:/code debian`
