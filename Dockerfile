@@ -12,7 +12,7 @@ RUN make all
 FROM debian
 
 RUN apt-get update && \
-    apt-get -y install libgfortran5 python3 python3-numpy
+    apt-get -y install libgfortran5 python3 python3-numpy ghostscript
 
 COPY --from=builder /code/exe/lens /usr/bin/lens
 COPY ./python_src/ /python_src
