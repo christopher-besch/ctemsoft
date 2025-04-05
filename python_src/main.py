@@ -111,7 +111,7 @@ class LensInput:
         return output
 
 
-def execute_lenses(inputs: List[LensInput]):
+def execute_lenses(inputs: List[LensInput], dpi: int):
     input_strs = list(map(lambda i: i.to_input_str(), inputs))
     lens_procs: List[subprocess.Popen[bytes]] = []
     for input, input_str in zip(inputs, input_strs):
@@ -144,7 +144,7 @@ def execute_lenses(inputs: List[LensInput]):
                 "gs",
                 "-dSAFER",
                 "-dEPSCrop",
-                "-r100",
+                f"-r{dpi}",
                 "-sDEVICE=pngalpha",
                 "-o",
                 input.output_png_file,
@@ -171,7 +171,11 @@ def delete_old_frames(out_dir: str):
 
 
 def create_lens_frames(
-    out_dir: str, first_frame: LensParameters, last_frame: LensParameters, frames: int
+    out_dir: str,
+    first_frame: LensParameters,
+    last_frame: LensParameters,
+    frames: int,
+    dpi: int,
 ) -> List[LensInput]:
     t_vals = np.linspace(0, 1, frames)
     lens_parameters_vec_list = (
@@ -191,7 +195,7 @@ def create_lens_frames(
     ]
     # for lens_input in lens_inputs:
     #     print(lens_input.to_input_str())
-    execute_lenses(lens_inputs)
+    execute_lenses(lens_inputs, dpi)
     return lens_inputs
 
 
@@ -216,6 +220,8 @@ def convert_to_video(lens_inputs: List[LensInput], out_dir: str, framerate: int)
             f"{framerate}",
             "-i",
             f"{out_dir}/%03d.png",
+            # "-s",
+            # "416x586",
             "-vcodec",
             "libx264",
             "-f",
@@ -224,6 +230,8 @@ def convert_to_video(lens_inputs: List[LensInput], out_dir: str, framerate: int)
             "1024k",
             "-preset",
             "slow",
+            "-pix_fmt",
+            "yuv420p",
             output_video,
         ],
         # stdout=subprocess.DEVNULL,
@@ -239,12 +247,14 @@ def main():
     OUT_DIR = "out"
     os.makedirs(OUT_DIR, exist_ok=True)
     delete_old_frames(OUT_DIR)
+    # EDIT THE PARAMETERS TO THESE FUNCTION CALLS:
     lens_inputs = create_lens_frames(
         OUT_DIR,
         first_frame=LensParameters(
             sampling_points=1000,
             magnetic_fields=[
-                MagneticField(field_strength=0.3, lateral_a=1, field_max_loc=0)
+                MagneticField(field_strength=0.3, lateral_a=1, field_max_loc=-1),
+                MagneticField(field_strength=2, lateral_a=1, field_max_loc=2),
             ],
             optical_axis_length=10,
             acc_voltage=100000,
@@ -252,14 +262,20 @@ def main():
         last_frame=LensParameters(
             sampling_points=1000,
             magnetic_fields=[
-                MagneticField(field_strength=4, lateral_a=1, field_max_loc=0)
+                MagneticField(field_strength=4, lateral_a=1, field_max_loc=-1),
+                MagneticField(field_strength=1, lateral_a=1, field_max_loc=2),
             ],
             optical_axis_length=10,
             acc_voltage=100000,
         ),
         frames=900,
+        # if you change this you might get an error like: [libx264 @ 0x55781b532a80] width not divisible by 2 (413x585)
+        # doodle around until you find something that works for you
+        # alternatively uncomment the -s flag for ffmpeg and set something divisible by 2 that you like
+        dpi=150,
     )
     convert_to_video(lens_inputs, OUT_DIR, 30)
+    # END OF FUNCTION CALLS
     print("All done")
     print("Have a very safe and productive day.")
 
